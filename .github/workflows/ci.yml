@@ -17,6 +17,8 @@ jobs:
       - run: pip install -r backend/requirements.txt
       - run: python -m compileall -q backend/app
       - run: pytest -q backend/tests
+        env:
+          PYTHONPATH: backend
 
   frontend:
     runs-on: ubuntu-latest
