@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Rights(){return <main className="container"><Link href="/admin" className="muted">← Admin</Link><h1>Rights Management</h1><section className="panel"><p>ตรวจสอบสิทธิ์ Territory, License Period, Adaptation Rights, Music Rights, Talent Releases และ Source Evidence ก่อนอนุมัติเผยแพร่</p><p className="muted">UI scaffold — ยังไม่ได้เชื่อมต่อ Rights API</p></section></main>}
