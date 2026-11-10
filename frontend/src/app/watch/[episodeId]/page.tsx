@@ -1,0 +1,5 @@
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+export default function Watch(){const params=useParams();const [playing,setPlaying]=useState(false);return <main className="container" style={{maxWidth:760}}><Link href="/" className="muted">← FLIXO</Link><section className="hero" style={{marginTop:20,minHeight:520,textAlign:"center",alignItems:"center"}}><span className="kicker">DEMO PLAYER</span><div style={{fontSize:56,margin:"36px 0"}}>▶</div><h2>ตัวอย่างเครื่องเล่นวิดีโอ</h2><p>Episode: {String(params.episodeId)} · เชื่อมต่อ Video Provider เพื่อเปิด Playback จริง</p><button className="btn" onClick={()=>setPlaying(!playing)}>{playing?"Pause Preview":"Play Preview"}</button></section><section className="panel" style={{marginTop:18}}><strong>สิทธิ์การรับชม</strong><p className="muted">ตัวเล่นนี้เป็น UI demo ยังไม่มีการโหลดวิดีโอจริง การปลดล็อกตอนและ wallet ต้องทำผ่าน backend ที่ตรวจสอบสิทธิ์แล้วเท่านั้น</p><Link href="/wallet" className="btn secondary">ไปที่ Wallet</Link></section></main>}
