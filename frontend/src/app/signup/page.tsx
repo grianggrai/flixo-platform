@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
@@ -11,7 +11,7 @@ export default function SignupPage() {
   const [busy,setBusy]=useState(false);
   const [message,setMessage]=useState("");
 
-  async function submit(event:React.FormEvent) {
+  async function submit(event:FormEvent) {
     event.preventDefault();setBusy(true);setMessage("");
     try {
       const supabase=createClient();
