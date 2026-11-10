@@ -21,6 +21,7 @@ Apply in ascending filename order:
 2. `0002_auth_profile_trigger.sql`
 3. `0003_episode_publication_policy.sql`
 4. `0004_auth_rbac_content_workflows.sql`
+5. `0005_null_safe_role_checks.sql`
 
 New accounts get role `viewer`. Signup metadata cannot grant elevated privileges.
 
