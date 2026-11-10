@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Forbidden(){return <main className="container" style={{maxWidth:620}}><section className="panel"><span className="kicker">403 · FORBIDDEN</span><h1 style={{fontSize:36}}>ไม่มีสิทธิ์เข้าถึง</h1><p className="muted">บัญชีนี้ไม่มี Role ที่จำเป็นสำหรับพื้นที่ดังกล่าว ติดต่อผู้ดูแลระบบ FLIXO หากต้องการขอสิทธิ์</p><Link href="/" className="btn">กลับหน้าแรก</Link></section></main>}
