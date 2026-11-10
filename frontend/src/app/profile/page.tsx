@@ -1,0 +1,2 @@
+import { Nav } from "@/components/Nav";
+export default function Profile(){return <><Nav/><main className="container" style={{maxWidth:760}}><span className="kicker">ACCOUNT</span><h1>โปรไฟล์ของฉัน</h1><section className="panel"><h2>Guest Viewer</h2><p className="muted">Demo mode — เชื่อมต่อ Supabase Auth เพื่อเปิดใช้งานการสมัครสมาชิกและจัดการโปรไฟล์</p><button className="btn secondary" disabled>เข้าสู่ระบบ (ยังไม่เปิดใช้งาน)</button></section></main></>}
