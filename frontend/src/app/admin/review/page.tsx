@@ -1,3 +1,49 @@
 "use client";
-import { useState } from "react";
-export default function Review(){const [status,setStatus]=useState("Pending");return <main className="container" style={{maxWidth:900}}><a href="/admin" className="muted">← Admin</a><h1>Editorial Review Queue</h1><section className="panel"><div style={{display:"flex",justifyContent:"space-between",gap:12}}><h2>ตัวอย่างซีรีส์: รักร้าย CEO</h2><strong>{status}</strong></div><p className="muted">Creator: Demo Studio · 24 Episodes · Rights evidence: pending verification</p><textarea rows={3} placeholder="เหตุผลหรือ Feedback สำหรับ Creator"/><div className="actions"><button className="btn" onClick={()=>setStatus("Approved (Demo)")}>Approve Demo</button><button className="btn secondary" onClick={()=>setStatus("Revision Requested (Demo)")}>Request Revision</button><button className="btn secondary" onClick={()=>setStatus("Rejected (Demo)")}>Reject</button></div><p className="muted">การเปลี่ยนสถานะนี้เป็น local demo ไม่ได้บันทึกลงฐานข้อมูล</p></section></main>}
+
+import { useEffect, useState } from "react";
+import { apiRequest } from "@/lib/api";
+
+type ReviewItem = {id:string;title:string;slug:string;synopsis:string;genre:string;status:string;rights_verified:boolean;created_at:string;creator_id:string};
+
+export default function Review() {
+  const [items,setItems]=useState<ReviewItem[]>([]);
+  const [reason,setReason]=useState<Record<string,string>>({});
+  const [loading,setLoading]=useState(true);
+  const [busy,setBusy]=useState<string|null>(null);
+  const [message,setMessage]=useState("");
+
+  async function load() {
+    setLoading(true);
+    try {const response=await apiRequest<{items:ReviewItem[]}>("/api/v1/admin/reviews");setItems(response.items);}
+    catch(error){setMessage(error instanceof Error?error.message:"โหลดรายการไม่สำเร็จ");}
+    finally{setLoading(false);}
+  }
+  useEffect(()=>{void load();},[]);
+
+  async function decide(id:string,decision:"approved"|"rejected"|"revision") {
+    setBusy(id);setMessage("");
+    try {
+      await apiRequest(`/api/v1/admin/reviews/${id}`,{method:"POST",body:JSON.stringify({decision,reason:reason[id]||null})});
+      setItems(current=>current.filter(item=>item.id!==id));
+    } catch(error){setMessage(error instanceof Error?error.message:"บันทึกผลตรวจสอบไม่สำเร็จ");}
+    finally{setBusy(null);}
+  }
+
+  return <main className="container" style={{maxWidth:980}}>
+    <a href="/admin" className="muted">← Admin</a><h1>Editorial Review Queue</h1>
+    {message&&<section className="panel" role="alert">{message}</section>}
+    {loading?<p className="muted">กำลังโหลดรายการ…</p>:items.length===0?<section className="panel"><h2>ไม่มีรายการรอตรวจสอบ</h2><p className="muted">รายการที่ Creator ส่งเข้าระบบจะปรากฏที่นี่</p></section>:
+      <div className="stack">{items.map(item=><section className="panel stack" key={item.id}>
+        <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}><h2>{item.title}</h2><strong>{item.status}</strong></div>
+        <p className="muted">{item.genre} · Creator ID: {item.creator_id} · Rights verified: {String(item.rights_verified)}</p>
+        <p>{item.synopsis}</p>
+        <textarea rows={3} value={reason[item.id]||""} onChange={e=>setReason(v=>({...v,[item.id]:e.target.value}))} placeholder="เหตุผลหรือ Feedback สำหรับ Creator"/>
+        <div className="actions">
+          <button className="btn" disabled={busy===item.id} onClick={()=>void decide(item.id,"approved")}>Approve</button>
+          <button className="btn secondary" disabled={busy===item.id} onClick={()=>void decide(item.id,"revision")}>Request Revision</button>
+          <button className="btn secondary" disabled={busy===item.id} onClick={()=>void decide(item.id,"rejected")}>Reject</button>
+        </div>
+        <p className="muted">Approve เปลี่ยนเป็นสถานะ Approved เท่านั้น ไม่ได้ Publish และไม่อนุมัติสิทธิ์ IP โดยอัตโนมัติ</p>
+      </section>)}</div>}
+  </main>;
+}
