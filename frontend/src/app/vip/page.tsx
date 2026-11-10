@@ -1,0 +1,2 @@
+import { Nav } from "@/components/Nav";
+export default function VIP(){return <><Nav/><main className="container" style={{maxWidth:800}}><section className="hero"><span className="kicker">FLIXO VIP</span><h1>ดูได้เต็มอรรถรส</h1><p>แพ็กเกจ VIP และสิทธิประโยชน์จะเปิดใช้งานเมื่อเชื่อมต่อ Subscription Provider, Payment Gateway และระบบสิทธิ์รับชม</p><span className="tag">COMING SOON</span></section></main></>}
