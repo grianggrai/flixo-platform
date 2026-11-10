@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
-  const params = useSearchParams();
-  const next = params.get("next");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -20,7 +18,7 @@ export default function LoginPage() {
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      router.replace(next && next.startsWith("/") && !next.startsWith("//") ? next : "/profile");
+      router.replace("/profile");
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "เข้าสู่ระบบไม่สำเร็จ");
