@@ -16,6 +16,7 @@ jobs:
           python-version: "3.11"
       - run: pip install -r backend/requirements.txt
       - run: python -m compileall -q backend/app
+      - run: pytest -q backend/tests
 
   frontend:
     runs-on: ubuntu-latest
