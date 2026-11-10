@@ -4,12 +4,12 @@ FLIXO is a short-form and episodic video streaming platform MVP.
 
 ## MVP scope
 
-- Viewer: discovery, series detail, playback shell, library, profile, wallet and VIP pages
-- Creator: creator dashboard and series submission workflow
-- Admin: creator, series, content review and rights-management screens
+- Viewer: home, discovery, series detail, player shell, library, profile, wallet and VIP
+- Creator: creator landing, dashboard and series submission UI
+- Admin: review queue, series, creator and rights-management UI
 - Backend: FastAPI REST API scaffold
-- Data: Supabase PostgreSQL migrations
-- Delivery: GitHub Actions CI baseline
+- Data: Supabase PostgreSQL schema and baseline row-level security policies
+- Delivery: GitHub Actions CI for backend syntax and frontend build
 
 ## Architecture
 
@@ -20,18 +20,47 @@ Viewer / Creator / Admin (Next.js)
               |
      Supabase PostgreSQL
               |
-   Video provider / Payments
+    Video provider / Payments
 ```
 
-The MVP is structured as a modular monolith. Payment, video delivery and authentication integrations must be configured and security-tested before production use.
+The MVP is a modular monolith. The frontend currently uses sample content. FastAPI wallet endpoints intentionally fail closed until authentication and transactional ledger services are implemented.
 
-## Repository layout
+## Local development
 
-- `frontend/` — Next.js application
-- `backend/` — FastAPI application
-- `supabase/migrations/` — database migrations
-- `docs/` — product acceptance criteria and delivery notes
+### Frontend
+
+```bash
+cd frontend
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+### Backend
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn app.main:app --reload --port 8000
+```
+
+API health check: `GET http://localhost:8000/api/v1/health`
+
+## Supabase
+
+Apply migrations in `supabase/migrations/` to a Supabase project after reviewing the policies. The SQL is a starting point; test RLS with separate viewer, creator, editor and admin identities before exposing production data.
 
 ## Production readiness
 
-This is an MVP starter, not a production-certified service. Before launch, complete authentication and authorization, Supabase RLS review, atomic wallet ledger operations, payment webhook signature verification and idempotency, signed video playback, observability, automated tests, backup/restore drills and deployment configuration.
+This repository is an MVP scaffold, not a production-certified streaming service. Still required:
+- Supabase Auth integration, server-side role checks and protected Creator/Admin routes
+- Production catalog queries, creator media upload and moderation lifecycle
+- Video provider integration, signed playback URLs and DRM/licensing decisions
+- Payment checkout, verified webhooks, idempotent wallet posting and reconciliation
+- Creator revenue calculation, payout operations and audit review
+- Automated integration/security tests, observability, backup/restore and deployment configuration
+
+The wallet, payments and playback are demo/disabled paths. No real money is accepted and no real video is streamed by this scaffold.
