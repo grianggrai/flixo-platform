@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Nav } from "@/components/Nav";
-import { catalog } from "@/lib/catalog";
+import { getSeriesBySlug } from "@/lib/catalog";
 
 export default async function SeriesDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const item = catalog.find((x) => x.slug === slug);
+  const item = await getSeriesBySlug(slug);
   if (!item) notFound();
 
   return <><Nav/><main className="container">
@@ -16,8 +16,8 @@ export default async function SeriesDetail({ params }: { params: Promise<{ slug:
       <div className="actions"><Link className="btn" href="/watch/episode-1">▶ ดูตอนที่ 1</Link></div>
     </section>
     <h2 style={{marginTop:40}}>รายการตอน</h2>
-    <div className="stack">{Array.from({length:item.episodes},(_,i)=>
-      <Link className="panel" key={i} href={`/watch/episode-${i+1}`}>ตอนที่ {i+1} <span className="muted"> · {i<3?"รับชมฟรี":"Premium"}</span></Link>
-    )}</div>
+    {item.episodes>0 ? <div className="stack">{Array.from({length:item.episodes},(_,i)=>
+      <Link className="panel" key={i} href={`/watch/episode-${i+1}`}>ตอนที่ {i+1} <span className="muted"> · ตอนที่ {i+1}</span></Link>
+    )}</div> : <p className="muted">ยังไม่มีตอนที่เผยแพร่</p>}
   </main></>;
 }
